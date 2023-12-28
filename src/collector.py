@@ -221,7 +221,6 @@ class MediaDB:
             if conn:
                 conn.close()
 
-
 class Collector:
     def __init__(self):
         self.article_urls = []
