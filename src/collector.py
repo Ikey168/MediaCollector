@@ -2,6 +2,13 @@
 Saves them into a Postgres Database
 """
 
+# NER model
+from transformers import AutoTokenizer, AutoModelForTokenClassification
+from transformers import pipeline
+
+# show NER results
+from spacy import displacy
+
 from configparser import ConfigParser
 import psycopg2
 from psycopg2 import sql
@@ -238,3 +245,13 @@ class Collector:
         for source_url in source_urls:
             self.article_list(source_url)
 
+class NER():
+
+    def __init__(self) -> None:
+        self.tokenizer = AutoTokenizer.from_pretrained("dslim/bert-base-NER")
+        self.model = AutoModelForTokenClassification.from_pretrained("dslim/bert-base-NER")
+        self.pipe = pipeline("ner", model=model, tokenizer=tokenizer)
+
+    def extract_entitities(text):
+        ner_results = pipe(text)
+        print(ner_results)
