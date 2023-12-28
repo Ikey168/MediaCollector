@@ -78,7 +78,6 @@ class MediaDB:
                 conn.close()
 
 
-
     def insert(self, table_name, data):
         """
         Insert data into a PostgreSQL table.
