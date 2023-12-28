@@ -250,8 +250,8 @@ class NER():
     def __init__(self) -> None:
         self.tokenizer = AutoTokenizer.from_pretrained("dslim/bert-base-NER")
         self.model = AutoModelForTokenClassification.from_pretrained("dslim/bert-base-NER")
-        self.pipe = pipeline("ner", model=model, tokenizer=tokenizer)
+        self.pipe = pipeline("ner", model=self.model, tokenizer=self.tokenizer)
 
-    def extract_entitities(text):
-        ner_results = pipe(text)
+    def extract_entitities(self, text):
+        ner_results = self.pipe(text)
         print(ner_results)
