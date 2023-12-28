@@ -31,6 +31,54 @@ class MediaDB:
 
         return db
 
+
+    def select(self, table_name, id):
+        """
+        Select the last inserted entry from a PostgreSQL table.
+
+        Parameters:
+        - connection_params (dict): Dictionary containing connection parameters (e.g., {'user': 'your_user', 'password': 'your_password', 'host': 'your_host', 'database': 'your_database'}).
+        - table_name (str): Name of the PostgreSQL table.
+
+        Returns:
+        - Tuple containing the selected entry or None if no entry is found.
+        """
+        conn = None
+        try:
+            # read connection parameters
+            params = self.config()
+
+            # connect to the PostgreSQL server
+            print('Connecting to the PostgreSQL database...')
+            conn = psycopg2.connect(**params)
+            
+            # create a cursor
+            cur = conn.cursor()
+            
+            # Construct the SQL query to select the last inserted entry
+            query = f"SELECT * FROM {table_name} WHERE id = {id}"
+
+            # Execute the query
+            cur.execute(query, data)
+
+            # Commit the changes to the database
+            conn.commit()
+
+            print("Data inserted successfully.")
+        
+        # close the communication with the PostgreSQL
+            cur.close()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        finally:
+            # Close the cursor and connection
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
+
+
     def insert(self, table_name, data):
         """
         Insert data into a PostgreSQL table.
