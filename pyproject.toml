@@ -10,6 +10,7 @@ readme = "README.md"
 python = "^3.11"
 numpy = "^1.26.2"
 newspaper3k = "^0.2.8"
+config = "^0.5.1"
 
 
 [build-system]

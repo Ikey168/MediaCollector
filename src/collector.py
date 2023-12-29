@@ -12,7 +12,6 @@ from spacy import displacy
 from configparser import ConfigParser
 import psycopg2
 from psycopg2 import sql
-from config import config
 
 import newspaper
 
@@ -229,6 +228,7 @@ class MediaDB:
                 conn.close()
 
 class Collector:
+    
     def __init__(self):
         self.article_urls = []
         self.article_titles = []
@@ -236,10 +236,18 @@ class Collector:
     
     def article_list(self, source_url):
         paper = newspaper.build(source_url)
+
         for article in paper.articles:
             self.article_urls.append(article.url)
             self.article_titles.append(article.title)
             self.article_texts.append(article.text)
+            print(article.text)
+            print()
+            print(article.title)
+            print()
+    def get_texts(self):
+        t = self.article_texts
+        return t
 
     def full_list(self, source_urls):
         for source_url in source_urls:
