@@ -14,6 +14,8 @@ import psycopg2
 from psycopg2 import sql
 
 import newspaper
+from newspaper import Article
+from newspaper import Config
 
 class MediaDB:
     
@@ -230,6 +232,10 @@ class MediaDB:
 class Collector:
     
     def __init__(self):
+        user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0'
+        self.config = Config()
+        self.config.browser_user_agent = user_agent
+        self.config.request_timeout = 10
         self.article_urls = []
         self.article_titles = []
         self.article_texts = []
@@ -237,18 +243,14 @@ class Collector:
     def article_list(self, source_url):
         paper = newspaper.build(source_url)
 
-        for article in paper.articles:
+        for article in paper.articles[:5]:
             url = article.url
-            a = Article(url)
+            a = Article(url, config=self.config)
             a.download()
             a.parse()
             self.article_urls.append(url)
             self.article_titles.append(article.title)
             self.article_texts.append(a.text)
-
-    def get_texts(self):
-        t = self.article_texts
-        return t
 
     def full_list(self, source_urls):
         for source_url in source_urls:
@@ -263,4 +265,5 @@ class NER():
 
     def extract_entitities(self, text):
         ner_results = self.pipe(text)
-        print(ner_results)
+        entities = list(set([d["word"] for d in ner_results]))
+        print(entities)

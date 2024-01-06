@@ -9,8 +9,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 numpy = "^1.26.2"
-newspaper3k = "^0.2.8"
 config = "^0.5.1"
+requests = "^2.31.0"
+tqdm = "^4.66.1"
+newspaper3k = "^0.2.8"
 
 
 [build-system]
