@@ -19,7 +19,7 @@ from newspaper import Config
 
 class MediaDB:
     
-    def __init__():
+    def __init__(self):
         pass
 
     def config(self, filename='database.ini', section='postgresql'):
@@ -229,33 +229,6 @@ class MediaDB:
             if conn:
                 conn.close()
 
-class Collector:
-    
-    def __init__(self):
-        user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0'
-        self.config = Config()
-        self.config.browser_user_agent = user_agent
-        self.config.request_timeout = 10
-        self.article_urls = []
-        self.article_titles = []
-        self.article_texts = []
-    
-    def article_list(self, source_url):
-        paper = newspaper.build(source_url)
-
-        for article in paper.articles[:5]:
-            url = article.url
-            a = Article(url, config=self.config)
-            a.download()
-            a.parse()
-            self.article_urls.append(url)
-            self.article_titles.append(article.title)
-            self.article_texts.append(a.text)
-
-    def full_list(self, source_urls):
-        for source_url in source_urls:
-            self.article_list(source_url)
-
 class NER():
 
     def __init__(self) -> None:
@@ -266,4 +239,37 @@ class NER():
     def extract_entitities(self, text):
         ner_results = self.pipe(text)
         entities = list(set([d["word"] for d in ner_results]))
-        print(entities)
+        return entities
+
+class Collector:
+    
+    def __init__(self):
+        user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0'
+        self.config = Config()
+        self.config.browser_user_agent = user_agent
+        self.config.request_timeout = 10
+        self.article_dics = []
+
+    
+    def article_list(self, source_url):
+        paper = newspaper.build(source_url)
+
+        for article in paper.articles[:5]:
+            dic = {}
+            url = article.url
+            a = Article(url, config=self.config)
+            a.download()
+            a.parse()
+            dic['url'] = url
+            dic['title'] = article.title
+            dic['text'] = a.text
+            ner = NER()
+            entities = ner.extract_entitities(a.text)
+            entity_string = ', '.join(entities)
+            dic['entites'] = entity_string
+            self.article_dics.append(dic)
+
+    def full_list(self, source_urls):
+        for source_url in source_urls:
+            self.article_list(source_url)
+
