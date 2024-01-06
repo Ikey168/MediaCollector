@@ -238,13 +238,14 @@ class Collector:
         paper = newspaper.build(source_url)
 
         for article in paper.articles:
-            self.article_urls.append(article.url)
+            url = article.url
+            a = Article(url)
+            a.download()
+            a.parse()
+            self.article_urls.append(url)
             self.article_titles.append(article.title)
-            self.article_texts.append(article.text)
-            print(article.text)
-            print()
-            print(article.title)
-            print()
+            self.article_texts.append(a.text)
+
     def get_texts(self):
         t = self.article_texts
         return t
