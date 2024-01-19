@@ -17,6 +17,10 @@ import newspaper
 from newspaper import Article
 from newspaper import Config
 
+from datetime import date
+from pytube import YouTube
+from pytube import Channel
+
 class MediaDB:
     
     def __init__():
@@ -255,6 +259,16 @@ class Collector:
     def full_list(self, source_urls):
         for source_url in source_urls:
             self.article_list(source_url)
+
+    def get_video(self, video_url):
+        yt = YouTube(url=video_url)
+        if yt.publish_date == date.today:
+            stream = yt.streams.filter(only_audio=True).first().download()
+            return False
+        else:
+            return True
+        
+
 
 class NER():
 
