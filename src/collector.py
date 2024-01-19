@@ -268,7 +268,11 @@ class Collector:
         else:
             return True
         
-
+    def get_video_list_from_channel(self, channel_url):
+        c = Channel(url=channel_url)
+        for url in c.video_urls:
+            if self.get_video(url):
+                break
 
 class NER():
 
