@@ -20,6 +20,7 @@ from newspaper import Config
 from datetime import date
 from pytube import YouTube
 from pytube import Channel
+import whisper
 
 class MediaDB:
     
@@ -240,9 +241,12 @@ class Collector:
         self.config = Config()
         self.config.browser_user_agent = user_agent
         self.config.request_timeout = 10
+
         self.article_urls = []
         self.article_titles = []
         self.article_texts = []
+
+        self.model = whisper.load_model("base")
     
     def article_list(self, source_url):
         paper = newspaper.build(source_url)
@@ -260,10 +264,18 @@ class Collector:
         for source_url in source_urls:
             self.article_list(source_url)
 
+    def get_transcript(self):
+        result = self.model.transcribe("audio.mp3")
+        text = result["text"]
+        return text
+
     def get_video(self, video_url):
         yt = YouTube(url=video_url)
         if yt.publish_date == date.today:
-            stream = yt.streams.filter(only_audio=True).first().download()
+            streams = yt.streams.filter(only_audio=True)
+            stream = streams[0]
+            stream.download("audio.mp3")
+            
             return False
         else:
             return True
@@ -273,6 +285,8 @@ class Collector:
         for url in c.video_urls:
             if self.get_video(url):
                 break
+
+    
 
 class NER():
 
