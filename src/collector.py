@@ -17,10 +17,14 @@ import newspaper
 from newspaper import Article
 from newspaper import Config
 
+import os
+import datetime
 from datetime import date
 from pytube import YouTube
 from pytube import Channel
 import whisper
+
+
 
 class MediaDB:
     
@@ -43,6 +47,7 @@ class MediaDB:
             raise Exception('Section {0} not found in the {1} file'.format(section, filename))
 
         return db
+
 
 
     def select(self, table_name, id):
@@ -72,7 +77,7 @@ class MediaDB:
             query = f"SELECT * FROM {table_name} WHERE id = {id}"
 
             # Execute the query
-            cur.execute(query, data)
+            cur.execute(query)
 
             # Commit the changes to the database
             conn.commit()
@@ -89,6 +94,8 @@ class MediaDB:
                 cur.close()
             if conn:
                 conn.close()
+
+
 
     def select_last(self, table_name):
         """
@@ -117,7 +124,7 @@ class MediaDB:
             query = f"SELECT * FROM {table_name} ORDER BY id DESC LIMIT 1"
 
             # Execute the query
-            cur.execute(query, data)
+            cur.execute(query)
 
             # Commit the changes to the database
             conn.commit()
@@ -134,6 +141,8 @@ class MediaDB:
                 cur.close()
             if conn:
                 conn.close()
+
+
 
     def insert(self, table_name, data):
         """
@@ -188,6 +197,8 @@ class MediaDB:
             if conn:
                 conn.close()
 
+
+
     def delete(self, table_name, condition):
         """
         Delete data from a PostgreSQL table based on a specified condition.
@@ -234,6 +245,8 @@ class MediaDB:
             if conn:
                 conn.close()
 
+
+
 class Collector:
     
     def __init__(self):
@@ -264,29 +277,45 @@ class Collector:
         for source_url in source_urls:
             self.article_list(source_url)
 
-    def get_transcript(self):
-        result = self.model.transcribe("audio.mp3")
+
+    def get_transcript(self, file):
+        result = self.model.transcribe(file)
         text = result["text"]
+        print(text)
+        if os.path.exists(file):
+            os.remove(file)
+        else:
+            print("The file does not exist") 
+
         return text
 
     def get_video(self, video_url):
         yt = YouTube(url=video_url)
-        if yt.publish_date == date.today:
+        t1 = yt.publish_date
+        t2 = datetime.datetime.combine(date.today(), datetime.time.min)
+        if t1 == t2:
+            print(yt.title)
             streams = yt.streams.filter(only_audio=True)
             stream = streams[0]
-            stream.download("audio.mp3")
-            
+            stream.download("data/video")
+
+            self.article_urls.append(video_url)
+            self.article_titles.append(yt.title)
+            text = self.get_transcript("data/video/" + yt.title + ".mp4")
+            self.article_texts.append(text)
             return False
         else:
+
             return True
         
     def get_video_list_from_channel(self, channel_url):
+        
         c = Channel(url=channel_url)
         for url in c.video_urls:
             if self.get_video(url):
                 break
 
-    
+
 
 class NER():
 
