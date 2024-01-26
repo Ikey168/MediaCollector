@@ -24,7 +24,7 @@ from pytube import YouTube
 from pytube import Channel
 import whisper
 
-
+import praw
 
 class MediaDB:
     
@@ -260,7 +260,27 @@ class Collector:
         self.article_texts = []
 
         self.model = whisper.load_model("base")
-    
+
+        filename = "/home/claude/Desktop/career/Projects/MediaCollector/src/config.ini"
+        # create a parser
+        parser = ConfigParser()
+        # read config file
+        parser.read(filename)
+
+        # get section, default to postgresql
+        section = "reddit"
+        db = {}
+        if parser.has_section(section):
+            params = parser.items(section)
+            for param in params:
+                db[param[0]] = param[1]
+        else:
+            raise Exception('Section {0} not found in the {1} file'.format(section, filename))
+
+        self.reddit = praw.Reddit(client_id=db["client_id"], client_secret=db["client_secret"], user_agent=db["user_agent"])
+
+
+
     def article_list(self, source_url):
         paper = newspaper.build(source_url)
 
@@ -315,7 +335,11 @@ class Collector:
             if self.get_video(url):
                 break
 
-
+    def get_reddit_posts(self, sub, number):
+        posts = self.reddit.subreddit(sub).top(limit=number, time_filter="day")
+        for post in posts:
+            print(post.title)
+            print(post.selftext)
 
 class NER():
 

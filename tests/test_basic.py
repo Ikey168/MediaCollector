@@ -7,4 +7,4 @@ import collector as co
 
 col = co.Collector()
 
-col.get_video("https://www.youtube.com/watch?v=EHUEEH_toy0")
+col.get_reddit_posts("MachineLearning", 5)
