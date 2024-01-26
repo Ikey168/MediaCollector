@@ -16,6 +16,8 @@ newspaper3k = "^0.2.8"
 pytube = "^15.0.0"
 openai-whisper = "^20231117"
 praw = "^7.7.1"
+twscrape = "^0.10.1"
+asyncio = "^3.4.3"
 
 
 [build-system]

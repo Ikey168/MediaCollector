@@ -26,6 +26,11 @@ import whisper
 
 import praw
 
+from twscrape import API, gather
+from twscrape.logger import set_log_level
+import asyncio
+
+
 class MediaDB:
     
     def __init__():
@@ -266,7 +271,6 @@ class Collector:
         parser = ConfigParser()
         # read config file
         parser.read(filename)
-
         # get section, default to postgresql
         section = "reddit"
         db = {}
@@ -279,7 +283,7 @@ class Collector:
 
         self.reddit = praw.Reddit(client_id=db["client_id"], client_secret=db["client_secret"], user_agent=db["user_agent"])
 
-
+        self.twapi = API()
 
     def article_list(self, source_url):
         paper = newspaper.build(source_url)
@@ -352,6 +356,14 @@ class Collector:
             for comment in comments:
                 self.get_replies(comment)
             print("---------------------------------------")
+
+    async def get_tweets(self, query):
+        await self.twapi.pool.add_account("elikrass", "code1read", "aschuly.ik@gmail.com", "rostislawOS1")
+        await self.twapi.pool.login_all()
+        q = query + " since:" + "2023-01-01 until:2023-05-31" #str(date.today())
+        async for tweet in self.twapi.search(q, limit=100):
+            print(tweet.rawContent)
+
 class NER():
 
     def __init__(self) -> None:
