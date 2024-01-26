@@ -358,7 +358,7 @@ class Collector:
             print("---------------------------------------")
 
     async def get_tweets(self, query):
-        await self.twapi.pool.add_account("elikrass", "code1read", "aschuly.ik@gmail.com", "rostislawOS1")
+        await self.twapi.pool.add_account(a, b, c, d)
         await self.twapi.pool.login_all()
         q = query + " since:" + "2023-01-01 until:2023-05-31" #str(date.today())
         async for tweet in self.twapi.search(q, limit=100):
