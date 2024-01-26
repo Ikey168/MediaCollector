@@ -334,13 +334,24 @@ class Collector:
         for url in c.video_urls:
             if self.get_video(url):
                 break
+    
+    def get_replies(self, comment, level=0):
+        print("  " * level + "|--" + comment.body)
+        print("-----")
+        for reply in comment.replies:
+
+            self.get_replies(reply, level+1)
+
 
     def get_reddit_posts(self, sub, number):
         posts = self.reddit.subreddit(sub).top(limit=number, time_filter="day")
         for post in posts:
             print(post.title)
             print(post.selftext)
-
+            comments = post.comments[:5]
+            for comment in comments:
+                self.get_replies(comment)
+            print("---------------------------------------")
 class NER():
 
     def __init__(self) -> None:
