@@ -19,12 +19,16 @@ from newspaper import Config
 
 import os
 import datetime
+from datetime import datetime
 from datetime import date
+from datetime import time
 from pytube import YouTube
 from pytube import Channel
 import whisper
 
 import praw
+
+import feedparser
 
 class MediaDB:
     
@@ -312,7 +316,7 @@ class Collector:
     def get_video(self, video_url):
         yt = YouTube(url=video_url)
         t1 = yt.publish_date
-        t2 = datetime.datetime.combine(date.today(), datetime.time.min)
+        t2 = datetime.combine(date.today(), datetime.time.min)
         if t1 == t2:
             print(yt.title)
             streams = yt.streams.filter(only_audio=True)
@@ -352,6 +356,23 @@ class Collector:
             for comment in comments:
                 self.get_replies(comment)
             print("---------------------------------------")
+
+    def get_rss_feed(self, url):
+        feed = feedparser.parse(url)
+        t2 = datetime.combine(date.today(), time.min)
+        for entry in feed.entries:
+
+            t1 = datetime.strptime(entry.published, '%a, %d %b %Y %H:%M:%S %Z')
+            t1 = t1.strftime('%Y-%m-%d')
+            t1 = datetime.strptime(t1, '%Y-%m-%d')
+
+            if t1 == t2:
+
+                print("Entry Link:", entry.link)
+                #print("Entry Title:", entry.title)
+                print("Entry Summary:", entry.summary)
+                print("\n")
+
 class NER():
 
     def __init__(self) -> None:

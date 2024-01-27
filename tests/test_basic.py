@@ -7,4 +7,4 @@ import collector as co
 
 col = co.Collector()
 
-col.get_reddit_posts("MachineLearning", 5)
+col.get_rss_feed("https://rss.firesky.tv/?filter=Germany")
