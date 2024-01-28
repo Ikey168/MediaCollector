@@ -30,6 +30,9 @@ import praw
 
 import feedparser
 
+import requests
+from bs4 import BeautifulSoup
+
 class MediaDB:
     
     def __init__():
@@ -373,6 +376,17 @@ class Collector:
                 print("Entry Summary:", entry.summary)
                 print("\n")
 
+    def get_pdf_list(self, url, url_prefix, pdf_signifier):
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, features='xml')
+        pdf_links = []
+
+        for link in soup.find_all('a'):
+            if link.get('href'):
+                if link.get('href').startswith(pdf_signifier):
+                    pdf_links.append(url_prefix + link.get('href'))
+        print(pdf_links)
+        return pdf_links
 class NER():
 
     def __init__(self) -> None:

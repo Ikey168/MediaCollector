@@ -7,4 +7,4 @@ import collector as co
 
 col = co.Collector()
 
-col.get_rss_feed("https://rss.firesky.tv/?filter=Germany")
+col.get_pdf_list("https://arxiv.org/list/cs.AI/recent", "https://arxiv.org", '/pdf')
