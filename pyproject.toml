@@ -17,6 +17,8 @@ pytube = "^15.0.0"
 openai-whisper = "^20231117"
 praw = "^7.7.1"
 feedparser = "^6.0.11"
+telethon = "^1.33.1"
+discord-py-self = "^2.0.0"
 
 
 [build-system]
