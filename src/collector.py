@@ -376,17 +376,27 @@ class Collector:
                 print("Entry Summary:", entry.summary)
                 print("\n")
 
+    def download_pdf(self, url, local_filename):
+        response = requests.get(url)
+        if response.status_code == 200:
+            with open(local_filename, 'wb') as file:
+                file.write(response.content)
+            print(f"PDF downloaded successfully as {local_filename}")
+        else:
+            print(f"Failed to download PDF. Status code: {response.status_code}")
+
+
     def get_pdf_list(self, url, url_prefix, pdf_signifier):
         response = requests.get(url)
         soup = BeautifulSoup(response.content, features='xml')
-        pdf_links = []
-
+        i = 0
         for link in soup.find_all('a'):
             if link.get('href'):
                 if link.get('href').startswith(pdf_signifier):
-                    pdf_links.append(url_prefix + link.get('href'))
-        print(pdf_links)
-        return pdf_links
+                    i += 1
+                    path = "/home/claude/Desktop/career/Projects/MediaCollector/pdf/file" + str(i) + ".pdf"
+                    self.download_pdf(url_prefix + link.get('href'), path)
+
 class NER():
 
     def __init__(self) -> None:
