@@ -31,7 +31,10 @@ import praw
 import feedparser
 
 import requests
+import json
 from bs4 import BeautifulSoup
+
+import discord
 
 class MediaDB:
     
@@ -286,7 +289,7 @@ class Collector:
 
         self.reddit = praw.Reddit(client_id=db["client_id"], client_secret=db["client_secret"], user_agent=db["user_agent"])
 
-
+        self.discord = discord.Client()
 
     def article_list(self, source_url):
         paper = newspaper.build(source_url)
@@ -396,6 +399,17 @@ class Collector:
                     i += 1
                     path = "/home/claude/Desktop/career/Projects/MediaCollector/pdf/file" + str(i) + ".pdf"
                     self.download_pdf(url_prefix + link.get('href'), path)
+
+    def get_discord(self, limit=10):
+        channel = self.discord.get_channel(channel_id)
+
+        messages = []
+        for message in channel.history(limit=limit):
+            messages.append(message.content)
+        print(messages)
+        return messages
+
+    def on_message()
 
 class NER():
 
