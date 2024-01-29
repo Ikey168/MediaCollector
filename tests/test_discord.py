@@ -37,4 +37,4 @@ async def on_message(message):
     # Do something with the collected messages (e.g., print them)
     print(collected_messages)
 
-client.run('MjMwNzAxMDcyNjM5OTgzNjE3.GoTKMO.spgyb2cHbL85IbyPUY-h9Mu8ltGsLqURzDBGqc')
+client.run('')
