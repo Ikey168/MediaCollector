@@ -8,3 +8,6 @@ import collector as co
 col = co.Collector()
 
 col.get_pdf_list("https://arxiv.org/list/cs.AI/recent", "https://arxiv.org", '/pdf')
+#col.download_pdf(links[0], "test.pdf")
+
+#col.article_list("https://aws.amazon.com/whitepapers")
