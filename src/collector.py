@@ -36,6 +36,8 @@ from bs4 import BeautifulSoup
 
 import discord
 
+from telethon.sync import TelegramClient
+
 class MediaDB:
     
     def __init__():
@@ -277,19 +279,31 @@ class Collector:
         # read config file
         parser.read(filename)
 
-        # get section, default to postgresql
         section = "reddit"
-        db = {}
+        rd_pars = {}
         if parser.has_section(section):
             params = parser.items(section)
             for param in params:
-                db[param[0]] = param[1]
+                rd_pars[param[0]] = param[1]
         else:
             raise Exception('Section {0} not found in the {1} file'.format(section, filename))
 
-        self.reddit = praw.Reddit(client_id=db["client_id"], client_secret=db["client_secret"], user_agent=db["user_agent"])
+
+
+        self.reddit = praw.Reddit(client_id=rd_pars["client_id"], client_secret=rd_pars["client_secret"], user_agent=rd_pars["user_agent"])
 
         self.discord = discord.Client()
+
+    
+        section = "telegram"
+        self.tl_pars = {}
+        if parser.has_section(section):
+            params = parser.items(section)
+            for param in params:
+                self.tl_pars[param[0]] = param[1]
+        else:
+            raise Exception('Section {0} not found in the {1} file'.format(section, filename))
+
 
     def article_list(self, source_url):
         paper = newspaper.build(source_url)
@@ -400,16 +414,13 @@ class Collector:
                     path = "/home/claude/Desktop/career/Projects/MediaCollector/pdf/file" + str(i) + ".pdf"
                     self.download_pdf(url_prefix + link.get('href'), path)
 
-    def get_discord(self, limit=10):
-        channel = self.discord.get_channel(channel_id)
+    def get_telegram_messages(self, url):
 
-        messages = []
-        for message in channel.history(limit=limit):
-            messages.append(message.content)
-        print(messages)
-        return messages
+        data = [] 
+        with TelegramClient(self.tl_pars["username"], self.tl_pars["api_id"], self.tl_pars["api_hash"]) as client:
+            for message in client.iter_messages(url):
+                print(message.sender_id, ':', message.text, message.date) 
 
-    def on_message()
 
 class NER():
 

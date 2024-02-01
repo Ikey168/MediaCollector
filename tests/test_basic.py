@@ -11,3 +11,4 @@ col = co.Collector()
 #col.download_pdf(links[0], "test.pdf")
 #col.article_list("https://aws.amazon.com/whitepapers")
 
+col.get_telegram_messages("https://t.me/+H6sENYwYKwk5MmM6")
